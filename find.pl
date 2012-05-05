@@ -1,50 +1,51 @@
-#!/usr/bin/perl -W
+#!/usr/bin/perl -w
 
 use strict;
+use Cwd;
 
 sub recurse {
 	my $currentdir = shift;
+	my $level = shift;
+	chdir $currentdir;
+	my $cwd = cwd;
+	print " " x $level."$level: Entering $cwd\n";
 
-	my ($thisdirsize, $thisdirfilecount) = (0, 0);
-print "Currentdir: $currentdir\n";
-	opendir(D, $currentdir) || die "Cannot open directory $currentdir\n";
+	opendir(D, '.') || die "Cannot open directory $currentdir\n";
 	my @dircontent = readdir( D );
 	closedir( D );
-print "$currentdir contains ".@dircontent." files\n";
 
-	foreach (sort @dircontent) {
-		print "$_";
-		if( -d ) { 
-			print "/";
-		} elsif( -x ) {
-			print "*";
-		}
-		print " ";
-	}
-	print "\n";
+	my ($thisdirsize, $thisdirfiles) = (0, 0);
 	foreach (@dircontent) {
 		if($_ eq '.' || $_ eq '..') {
-			# do nothing
+			next;
+		} elsif( -l $_ ) {
+			next;
 		} elsif( -d $_ ) {
-		print "2: $_\n";
-			my $subdirsize = &recurse( $_ );
-			print "$_: $subdirsize\n";
+			my ($subdirsize, $subdirfiles) = &recurse( $_, $level+1 );
 			$thisdirsize += $subdirsize;
+			$thisdirfiles += $subdirfiles;
 		} elsif( -f $_ ) {
-		print "3: $_\n";
-			my $filesize = -s $_;
-			$thisdirsize += $filesize; 
-			print "$_ $filesize $thisdirsize\n";	
+		} else {
+			next;
 		}
+		my $filesize = -s $_ || 0;
+		$thisdirsize += $filesize; 
+		$thisdirfiles ++;
 	}
-	return $thisdirsize;
+	print " " x $level."$level: Returning from $cwd, $thisdirfiles files total\n";
+	chdir( ".." );
+	return ($thisdirsize, $thisdirfiles);
 }
 
 sub main {
 	my $basedir = shift || "";
 	print "Basedir: $basedir\n";
 	if (-e $basedir) {
-		print "$basedir: ".&recurse($basedir)."\n";
+		(my $size, my $files) = &recurse( $basedir, 0 );
+		my $fs = -s $basedir;
+		print "$basedir $fs\n";
+		$files ++;                                        # Account for the base directory
+		print "$basedir: $size bytes, $files files\n";
 	} else {
 		die "Basedir not found\n";
 	}
