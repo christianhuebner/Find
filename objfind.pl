@@ -1,15 +1,15 @@
 #!/usr/bin/perl -w
 
 use strict;
-use Directory;
+use Node;
 
 sub main {
 	my $basedir = shift || "";
 
 	if (-e $basedir) {
 		print "Starting objfind on basedir $basedir\n";
-		my $baseobj = Directory->new( NAME => $basedir );
-		$baseobj->print();
+		my $baseobj = Node->new( NAME => $basedir, LEVEL => 0 );
+		#$baseobj->print();
 	} else {
 		die "Basedir $basedir not found\n";
 	}
