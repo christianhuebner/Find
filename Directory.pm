@@ -1,3 +1,5 @@
+package Directory;
+
 #
 #===============================================================================
 #
@@ -11,9 +13,6 @@
 #     REVISION: 0.8
 #     REQUIRES: Node.pm, File.pm, Perl 5.10 or above
 #===============================================================================
-
-
-package Directory;
 
 use strict;
 use warnings;
@@ -40,16 +39,17 @@ sub new {
     my $parent = shift || "none";
 
     my $self = $class->SUPER::new( $path, $path, $parent );
-	# Containers for child node references
-    $self->{ DIRCHILDREN  => [], FILECHILDREN => [], LINKCHILDREN => [] };
-	# Additional stats for directories only
+
+    # Containers for child node references
+    $self->{ DIRCHILDREN => [], FILECHILDREN => [], LINKCHILDREN => [] };
+
+    # Additional stats for directories only
     $self->{ TOTALSIZE => 0, TOTALFILES => 0, TOTALDIRS => 0, TOTALLINKS => 0 };
 
     $self->populate();   # Create nodes for all dirs and files in this directory
     $self->collect();    # Collect stats for dirs and files in this directory
     return $self;
 }
-
 
 #===  CLASS METHOD  ============================================================
 #        CLASS: Directory
@@ -64,17 +64,20 @@ sub new {
 sub populate {
     my $self = shift;
 
-	# Acquire directory contents
-    opendir( D, $self->{PATH} ) || die "Cannot open directory " . $self->{PATH} . "\n";
+    # Acquire directory contents
+    opendir( D, $self->{PATH} )
+      || die "Cannot open directory " . $self->{PATH} . "\n";
     my @dircontent = readdir(D);
     closedir(D);
 
-	# Iterate over directory contents and create file and directory nodes
+    # Iterate over directory contents and create file and directory nodes
     foreach (@dircontent) {
-        if ( /^\.$/x || /^\.\.$/x ) { next; }   # Ignore . and .., they are no children of this directory
+        if ( /^\.$/x || /^\.\.$/x ) {
+            next;
+        }    # Ignore . and .., they are no children of this directory
         my $path = $self->{PATH} . "/" . $_;
         given ($path) {
-            when (-l) {  next; }
+            when (-l) { next; }
             when (-d) { $self->adddir($_); }
             when (-f) { $self->addfile($_); }
         }

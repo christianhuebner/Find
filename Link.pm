@@ -1,10 +1,10 @@
-package File;
+package Link;
 #
 #===============================================================================
 #
-#         FILE: File.pm
+#         FILE: Link.pm
 #
-#  DESCRIPTION: File class 
+#  DESCRIPTION: Link class 
 #
 #       AUTHOR: Christian Huebner <christian.huebner@linuxwisdom.com>
 # ORGANIZATION: LinuxWisdom, Inc.
@@ -19,7 +19,7 @@ use Node;
 use base qw( Node );
 
 #===  CLASS METHOD  ============================================================
-#        CLASS: File
+#        CLASS: Link
 #       METHOD: new
 #   PARAMETERS: path, parent node
 #      RETURNS: Reference to itself
