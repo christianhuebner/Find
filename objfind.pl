@@ -8,7 +8,8 @@ sub main {
 
 	if (-e $basedir) {
 		print "Starting objfind on basedir $basedir\n";
-		my $baseobj = Node->new( NAME => $basedir, LEVEL => 0 );
+		my $baseobj = Node->new( PATH => $basedir );
+		#$baseobj->dirstats();
 		#$baseobj->print();
 	} else {
 		die "Basedir $basedir not found\n";

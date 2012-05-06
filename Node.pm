@@ -1,44 +1,31 @@
 package Node;
 
+# Superclass for directory, file, link
+
 sub new {
 	my $class = shift;
 	$self = { 
-		@_,			# Name, Recursion level
-		DIROBJECTS => [], 
+		PATH => $_[1],
+		PARENT => undef,
+		DEV => undef,
+		SIZE => 0,
+		CTIME => 0,
+		MTIME => 0,
+		ATIME => 0,
+		PERMISSIONS => undef
 	};
 	bless ($self, $class);
-print "Created ".$self->{NAME}."\n";
 	$self->populate();
 	return $self;
 }
 
 sub populate {
 	my $self = shift;
-
-	opendir(D, $self->{NAME} ) || die "Cannot open directory ".$self->{NAME}."\n";
-	my @dircontent = readdir( D );
-	closedir( D );
-
-	foreach( @dircontent ) {
-		next if($_ eq '.' || $_ eq '..');
-		my $childpath = $self->{NAME}."/".$_;
-
-		if( -d $childpath ) {
-			my $dirnode = Directory->new( NAME => $childpath );
-			push( @{$self->{DIROBJECTS}}, $dirnode );
-		}
-	}
-	print $self->{NAME}." ".@{$self->{DIROBJECTS}}."\n";
-}
-
-sub check {
-	my $self = shift;
-	print "Checking: ".$self->{NAME}." Dirobjects: ".@{$self->{DIROBJECTS}}."\n";
-
-	foreach( @{$self->{DIROBJECTS}} ) {
-		print $_->getname();
-	}
-}
+	my @statkeys = qw(DEVICE INODE MODE NLINK UID GID RDEV SIZE ATIME MTIME CTIME BLKSIZE BLOCKS);
+	@{$self}{@statkeys} = stat( $self->{PATH} );
+	print $self->{"SIZE"}."\n";
+	return ;
+} ## --- end sub populate
 
 sub getname {
 	my $self = shift;
