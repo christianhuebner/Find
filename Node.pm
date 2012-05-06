@@ -1,35 +1,52 @@
 package Node;
 
+use strict;
+use warnings;
+
 # Superclass for directory, file, link
 
 sub new {
-	my $class = shift;
-	$self = { 
-		PATH => $_[1],
-		PARENT => undef,
-		DEV => undef,
-		SIZE => 0,
-		CTIME => 0,
-		MTIME => 0,
-		ATIME => 0,
-		PERMISSIONS => undef
-	};
-	bless ($self, $class);
-	$self->populate();
-	return $self;
+    my $class = shift;
+	my $path = shift;
+    my $self  = {
+        PATH   => shift,
+        PARENT => shift,
+    };
+    bless( $self, $class );
+    $self->initialize();
+    return $self;
 }
 
-sub populate {
-	my $self = shift;
-	my @statkeys = qw(DEVICE INODE MODE NLINK UID GID RDEV SIZE ATIME MTIME CTIME BLKSIZE BLOCKS);
-	@{$self}{@statkeys} = stat( $self->{PATH} );
-	print $self->{"SIZE"}."\n";
-	return ;
-} ## --- end sub populate
+sub initialize {
+    my $self = shift;
+    my @statkeys =
+      qw(DEVICE INODE MODE NLINK UID GID RDEV SIZE ATIME MTIME CTIME BLKSIZE BLOCKS);
+    @{$self}{@statkeys} = stat( $self->{PATH} );
 
-sub getname {
-	my $self = shift;
-	return $self->{NAME};
+    #print $self->{"SIZE"}."\n";
+    return;
+}    ## --- end sub populate
+
+sub getpath {
+    my $self = shift;
+    return $self->{PATH};
+}
+
+sub getdata {
+    my $self = shift;
+    my $key  = shift;
+    return $self->{$key};
+}
+
+sub setparent {
+    my $self = shift;
+    push( @{ $self->{PARENT} }, $_ );
+    return;
+}
+
+sub getsize {
+    my $self = shift;
+    return $self->{SIZE};
 }
 
 1;
