@@ -1,3 +1,17 @@
+#
+#===============================================================================
+#
+#         FILE: Node.pm
+#
+#  DESCRIPTION: Node class, parent of Directory.pm, File.pm and Link.pm
+#
+#       AUTHOR: Christian Huebner <christian.huebner@linuxwisdom.com>
+# ORGANIZATION: LinuxWisdom, Inc.
+#      CREATED: 05/06/2012
+#     REVISION: 0.8
+#===============================================================================
+
+
 package Node;
 
 use strict;
@@ -27,10 +41,6 @@ sub initialize {
     return;
 }    ## --- end sub populate
 
-sub getpath {
-    my $self = shift;
-    return $self->{PATH};
-}
 
 sub getdata {
     my $self = shift;
@@ -44,9 +54,10 @@ sub setparent {
     return;
 }
 
-sub getsize {
+sub getitem {
     my $self = shift;
-    return $self->{SIZE};
+	my $key = shift;
+    return $self->{$key};
 }
 
 1;
