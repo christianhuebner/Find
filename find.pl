@@ -1,7 +1,21 @@
 #!/usr/bin/perl -w
+#
+#===============================================================================
+#
+#         FILE: find.pl
+#
+#  DESCRIPTION: 
+#
+#       AUTHOR: Christian Huebner (), <christian.huebner@linuxwisdom.com>
+# ORGANIZATION: LinuxWisdom, Inc.
+#      CREATED: 05/07/2012
+#     REVISION: ---
+#===============================================================================
 
 use warnings;
 use strict;
+
+our ($VERSION) = '$Revision: 3629 $' =~ m{ \$Revision: \s+ (\S+) }x;"
 
 use feature "switch";
 
@@ -13,7 +27,7 @@ sub recurse {
     chdir $currentdir;
     my $cwd = cwd;
 
-    opendir( D, '.' ) || die "Cannot open directory $currentdir\n";
+    opendir( D, "." ) || die "Cannot open directory $currentdir\n";
     my @dircontent = readdir(D);
     closedir(D);
 
