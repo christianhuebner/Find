@@ -33,10 +33,14 @@ sub recurse {
     foreach my $dir (@dircontent) {
         given ($dir) {
         	when ( ( $dir =~m/^\.$/x) || ( $dir =~ m/^\.\.$/x ) ) { next; }
-            when (-l) {
-                next;
-            }
-            when (-d) {
+			when ( -l ) {
+				my $filesize = length(readlink( $dir ));
+				print "$dir $filesize\n";
+		        $thisdirsize += $filesize;
+        		$thisdirfiles++;
+				next;
+			}
+            when ( -d ) {
                 my ( $subdirsize, $subdirfiles ) = &recurse( $_, $level + 1 );
                 $thisdirsize  += $subdirsize;
                 $thisdirfiles += $subdirfiles;
@@ -55,7 +59,8 @@ sub main {
     print "Basedir: $basedir\n";
     if ( -e $basedir ) {
         my ( $size, $files ) = &recurse( $basedir, 0 );
-        $files++;    # Account for the base directory
+		$size += -s $basedir;	#Account for basedir size
+        $files++;    			# Account for the base directory
         print "$basedir: $size bytes, $files files\n";
     }
     else {
