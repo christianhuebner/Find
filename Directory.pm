@@ -10,7 +10,7 @@ package Directory;
 #       AUTHOR: Christian Huebner <christian.huebner@linuxwisdom.com>
 # ORGANIZATION: LinuxWisdom, Inc.
 #      CREATED: 05/06/2012
-#     REVISION: 0.8
+#     REVISION: 
 #     REQUIRES: Node.pm, File.pm, Perl 5.10 or above
 #===============================================================================
 
