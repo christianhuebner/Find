@@ -15,8 +15,8 @@ package File;
 
 use strict;
 use warnings;
-use Node;
 
+use Node;
 use base qw( Node );
 
 #===  CLASS METHOD  ============================================================

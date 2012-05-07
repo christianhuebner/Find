@@ -35,7 +35,7 @@ sub new {
     my $parent = shift;
     my $self   = $class->SUPER::new( $path, $path, $parent );
 
-	$self->populate();
+    $self->populate();
     return $self;
 }
 
@@ -50,13 +50,13 @@ sub new {
 #     SEE ALSO: n/a
 #===============================================================================
 sub populate {
-	my $self = shift;
-	$self->{LINKTARGET} = readlink($self->{PATH});
-	if ( $self->{LINKTARGET} ) { 
-		$self->{LINKABSOLUTE} = ( $self->{LINKTARGET} =~ m/^\//x ); 
-	}
-    $self->{TOTALSIZE} = length ( $self->{LINKTARGET} ) | 0 ;
-	return;
+    my $self = shift;
+    $self->{LINKTARGET} = readlink( $self->{PATH} );
+    if ( $self->{LINKTARGET} ) {
+        $self->{LINKABSOLUTE} = ( $self->{LINKTARGET} =~ m/^\//x );
+    }
+    $self->{TOTALSIZE} = length( $self->{LINKTARGET} ) | 0;
+    return;
 }
 
 1;

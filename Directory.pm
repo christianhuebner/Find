@@ -42,13 +42,13 @@ sub new {
     my $self = $class->SUPER::new( $path, $path, $parent );
 
     # Additional class members for directories only
-    $self->{DIRCHILDREN} = [];
-	$self->{FILECHILDREN} = []; 
-	$self->{LINKCHILDREN} = [];
-    $self->{TOTALSIZE} = 0;
-	$self->{TOTALFILES} = 0;
-	$self->{TOTALDIRS} = 0;
-	$self->{TOTALLINKS} = 0;
+    $self->{DIRCHILDREN}  = [];
+    $self->{FILECHILDREN} = [];
+    $self->{LINKCHILDREN} = [];
+    $self->{TOTALSIZE}    = 0;
+    $self->{TOTALFILES}   = 0;
+    $self->{TOTALDIRS}    = 0;
+    $self->{TOTALLINKS}   = 0;
 
     $self->populate();   # Create nodes for all dirs and files in this directory
     $self->collect();    # Collect stats for dirs and files in this directory
@@ -76,15 +76,20 @@ sub populate {
 
     # Iterate over directory contents and create file and directory nodes
     foreach (@dircontent) {
-        if ( /^\.$/x || /^\.\.$/x ) {
-            next;
-        }    # Ignore . and .., they are no children of this directory
+		# Ignore . and .., they are no children of this directory
+        if ( /^\.$/x || /^\.\.$/x ) { next; }    
         my $path = $self->{PATH} . "/" . $_;
+      	# Create and attach Directory, File and Link child objects to current node
         given ($path) {
-			# Create and attach Directory, File and Link child objects to current node
-            when (-l) { push( @{ $self->{LINKCHILDREN} }, Link->new( $_, $self ) ); }
-            when (-d) { push( @{ $self->{DIRCHILDREN} }, Directory->new( $_, $self ) ); }
-            when (-f) { push( @{ $self->{FILECHILDREN} }, File->new( $_, $self ) ); }
+            when (-l) {
+                push( @{ $self->{LINKCHILDREN} }, Link->new( $_, $self ) );
+            }
+            when (-d) {
+                push( @{ $self->{DIRCHILDREN} }, Directory->new( $_, $self ) );
+            }
+            when (-f) {
+                push( @{ $self->{FILECHILDREN} }, File->new( $_, $self ) );
+            }
         }
     }
     return;
@@ -102,21 +107,28 @@ sub populate {
 #===============================================================================
 sub collect {
     my $self = shift;
-    $self->{TOTALSIZE} += $self->{SIZE};        		# Size of this directory
-	($self->{TOTALDIRS} ++) if ( $self->{PARENT} eq "none" );
-	$self->{TOTALDIRS} += @{$self->{DIRCHILDREN}}; 		# Count this directory's children
-	$self->{TOTALFILES} += @{$self->{FILECHILDREN}};
-	$self->{TOTALLINKS} += @{$self->{LINKCHILDREN}};
-    foreach ( @{ $self->{FILECHILDREN} }, @{ $self->{DIRCHILDREN} }, @{ $self->{LINKCHILDREN} } ) {
-        $self->{TOTALSIZE} += $_->getitem("TOTALSIZE"); # Add total sizes of all children
+    $self->{TOTALSIZE} += $self->{SIZE};    # Size of this directory
+    ( $self->{TOTALDIRS}++ ) if ( $self->{PARENT} eq "none" );
+    $self->{TOTALDIRS} +=
+      @{ $self->{DIRCHILDREN} };            # Count this directory's children
+    $self->{TOTALFILES} += @{ $self->{FILECHILDREN} };
+    $self->{TOTALLINKS} += @{ $self->{LINKCHILDREN} };
+    foreach (
+        @{ $self->{FILECHILDREN} },
+        @{ $self->{DIRCHILDREN} },
+        @{ $self->{LINKCHILDREN} }
+      )
+    {
+        $self->{TOTALSIZE} +=
+          $_->getitem("TOTALSIZE");         # Add total sizes of all children
     }
     foreach ( @{ $self->{DIRCHILDREN} } ) {
-		$self->{TOTALDIRS} += $_->getitem("TOTALDIRS");
-		$self->{TOTALFILES} += $_->getitem("TOTALFILES");
-		$self->{TOTALLINKS} += $_->getitem("TOTALLINKS");
-	}
-	foreach ( @{ $self->{LINKCHILDREN} } ) {
-	}
+        $self->{TOTALDIRS}  += $_->getitem("TOTALDIRS");
+        $self->{TOTALFILES} += $_->getitem("TOTALFILES");
+        $self->{TOTALLINKS} += $_->getitem("TOTALLINKS");
+    }
+    foreach ( @{ $self->{LINKCHILDREN} } ) {
+    }
     return;
 }
 
