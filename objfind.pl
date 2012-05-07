@@ -21,7 +21,7 @@ sub main {
     if ( -e $basedir ) {
         print "Starting objfind on basedir $basedir\n";
         my $rootobj = Directory->new($basedir, "none");
-        #print $rootobj->getdata("INODE") . " ";
+        print $rootobj->getitem("TOTALSIZE")."\n";
     }
     else {
         die "Basedir $basedir not found\n";

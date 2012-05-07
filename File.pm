@@ -1,10 +1,11 @@
 package File;
+
 #
 #===============================================================================
 #
 #         FILE: File.pm
 #
-#  DESCRIPTION: File class 
+#  DESCRIPTION: File class
 #
 #       AUTHOR: Christian Huebner <christian.huebner@linuxwisdom.com>
 # ORGANIZATION: LinuxWisdom, Inc.
@@ -29,10 +30,10 @@ use base qw( Node );
 #     SEE ALSO: n/a
 #===============================================================================
 sub new {
-    my $class = shift;
-    my $path = shift;
+    my $class  = shift;
+    my $path   = shift;
     my $parent = shift;
-    my $self  = $class->SUPER::new( $path, $path, $parent );
+    my $self   = $class->SUPER::new( $path, $path, $parent );
     return $self;
 }
 

@@ -8,7 +8,6 @@ sub recurse {
 	my $level = shift;
 	chdir $currentdir;
 	my $cwd = cwd;
-	print " " x $level."$level: Entering $cwd\n";
 
 	opendir(D, '.') || die "Cannot open directory $currentdir\n";
 	my @dircontent = readdir( D );
@@ -32,7 +31,6 @@ sub recurse {
 		$thisdirsize += $filesize; 
 		$thisdirfiles ++;
 	}
-	print " " x $level."$level: Returning from $cwd, $thisdirfiles files total\n";
 	chdir( ".." );
 	return ($thisdirsize, $thisdirfiles);
 }
@@ -42,8 +40,6 @@ sub main {
 	print "Basedir: $basedir\n";
 	if (-e $basedir) {
 		(my $size, my $files) = &recurse( $basedir, 0 );
-		my $fs = -s $basedir;
-		print "$basedir $fs\n";
 		$files ++;                                        # Account for the base directory
 		print "$basedir: $size bytes, $files files\n";
 	} else {
