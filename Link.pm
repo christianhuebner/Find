@@ -34,6 +34,7 @@ sub new {
     my $path   = shift;
     my $parent = shift;
     my $self   = $class->SUPER::new( $path, $path, $parent );
+
 	$self->populate();
     return $self;
 }
@@ -54,6 +55,7 @@ sub populate {
 	if ( $self->{LINKTARGET} ) { 
 		$self->{LINKABSOLUTE} = ( $self->{LINKTARGET} =~ m/^\//x ); 
 	}
+    $self->{TOTALSIZE} = length ( $self->{LINKTARGET} ) | 0 ;
 	return;
 }
 

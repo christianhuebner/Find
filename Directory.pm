@@ -42,8 +42,13 @@ sub new {
     my $self = $class->SUPER::new( $path, $path, $parent );
 
     # Additional class members for directories only
-    #$self->{ DIRCHILDREN => [], FILECHILDREN => [], LINKCHILDREN => [] };
-    #$self->{ TOTALSIZE => 0, TOTALFILES => 0, TOTALDIRS => 0, TOTALLINKS => 0 };
+    $self->{DIRCHILDREN} = [];
+	$self->{FILECHILDREN} = []; 
+	$self->{LINKCHILDREN} = [];
+    $self->{TOTALSIZE} = 0;
+	$self->{TOTALFILES} = 0;
+	$self->{TOTALDIRS} = 0;
+	$self->{TOTALLINKS} = 0;
 
     $self->populate();   # Create nodes for all dirs and files in this directory
     $self->collect();    # Collect stats for dirs and files in this directory
@@ -80,7 +85,6 @@ sub populate {
             when (-l) { push( @{ $self->{LINKCHILDREN} }, Link->new( $_, $self ) ); }
             when (-d) { push( @{ $self->{DIRCHILDREN} }, Directory->new( $_, $self ) ); }
             when (-f) { push( @{ $self->{FILECHILDREN} }, File->new( $_, $self ) ); }
-			print "$_\n";
         }
     }
     return;
@@ -98,16 +102,21 @@ sub populate {
 #===============================================================================
 sub collect {
     my $self = shift;
-    $self->{TOTALSIZE} += $self->{SIZE};    # Size of this directory
-    foreach ( @{ $self->{FILECHILDREN} } )
-    {    # Size of files directly attached to this directory
-        $self->{TOTALSIZE} += $_->getitem("SIZE");
+    $self->{TOTALSIZE} += $self->{SIZE};        		# Size of this directory
+	($self->{TOTALDIRS} ++) if ( $self->{PARENT} eq "none" );
+	$self->{TOTALDIRS} += @{$self->{DIRCHILDREN}}; 		# Count this directory's children
+	$self->{TOTALFILES} += @{$self->{FILECHILDREN}};
+	$self->{TOTALLINKS} += @{$self->{LINKCHILDREN}};
+    foreach ( @{ $self->{FILECHILDREN} }, @{ $self->{DIRCHILDREN} }, @{ $self->{LINKCHILDREN} } ) {
+        $self->{TOTALSIZE} += $_->getitem("TOTALSIZE"); # Add total sizes of all children
     }
-    foreach ( @{ $self->{DIRCHILDREN} } )
-    {    # Totalsize of all directories attached to this directory
-        $self->{TOTALSIZE} += $_->getitem("TOTALSIZE");
-    }
-    #print $self->{PATH} . " Size: " . $self->{TOTALSIZE} . "\n";
+    foreach ( @{ $self->{DIRCHILDREN} } ) {
+		$self->{TOTALDIRS} += $_->getitem("TOTALDIRS");
+		$self->{TOTALFILES} += $_->getitem("TOTALFILES");
+		$self->{TOTALLINKS} += $_->getitem("TOTALLINKS");
+	}
+	foreach ( @{ $self->{LINKCHILDREN} } ) {
+	}
     return;
 }
 

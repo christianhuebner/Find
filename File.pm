@@ -34,6 +34,7 @@ sub new {
     my $path   = shift;
     my $parent = shift;
     my $self   = $class->SUPER::new( $path, $path, $parent );
+    $self->{TOTALSIZE} = $self->{SIZE};
     return $self;
 }
 
