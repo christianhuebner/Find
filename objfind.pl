@@ -22,11 +22,14 @@ sub main {
 	
     if ( chdir($basedir) ) {
 		my $rootdir = cwd(); # Fastest way to get an absolute path to the directory
-        print "Starting objfind on basedir $rootdir\n";
         my $rootobj = Directory->new( $rootdir, "none" );
-        print $rootobj->getitem("PATH")
+		my $totalitems = $rootobj->getitem("TOTALDIRS")+$rootobj->getitem("TOTALFILES")+$rootobj->getitem("TOTALLINKS");
+        print "objfind.pl: "
+		  . $rootobj->getitem("PATH")
           . ": size "
           . $rootobj->getitem("TOTALSIZE")
+		  . " total items "
+		  . $totalitems
           . " dirs "
           . $rootobj->getitem("TOTALDIRS")
           . " files "
