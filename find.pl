@@ -15,8 +15,6 @@
 use warnings;
 use strict;
 
-our ($VERSION) = '$Revision: 3629 $' =~ m{ \$Revision: \s+ (\S+) }x;"
-
 use feature "switch";
 
 use Cwd;
