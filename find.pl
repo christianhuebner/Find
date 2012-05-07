@@ -34,9 +34,7 @@ sub recurse {
         given ($dir) {
         	when ( ( $dir =~m/^\.$/x) || ( $dir =~ m/^\.\.$/x ) ) { next; }
 			when ( -l ) {
-				my $filesize = length(readlink( $dir ));
-				print "$dir $filesize\n";
-		        $thisdirsize += $filesize;
+		        $thisdirsize += length(readlink( $dir ));
         		$thisdirfiles++;
 				next;
 			}
@@ -46,8 +44,7 @@ sub recurse {
                 $thisdirfiles += $subdirfiles;
             }
         }
-        my $filesize = -s $dir || 0;
-        $thisdirsize += $filesize;
+        $thisdirsize += -s $dir || 0;
         $thisdirfiles++;
     }
     chdir ( ".." );
